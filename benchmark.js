@@ -2,6 +2,8 @@
 
 var Benchmark = require('benchmark')
   , fs = require('fs')
+  , path = require('path')
+  , assert = require('assert')
 
   , msgpack5 = require('msgpack5')()
 
@@ -61,12 +63,33 @@ var Benchmark = require('benchmark')
     },
   }
 
-  , sampleFiles = ["sample-datatypes.json", "sample-small.json", "sample-medium.json", "sample-large.json"]
+  , sampleFiles = ["sample-datatypes.json", "sample-small.json", "sample-medium.json", "sample-large.json", "binary-data.js", "binary-multiple.js"]
+
+  , sampleDecoders = {
+    'json': (filename) => JSON.parse(fs.readFileSync(filename, "utf-8").toString()),
+    'js': (filename) => require(path.join(__dirname, filename))(),
+  }
 
 
 function validate(name, data, encoded) {
-  if (JSON.stringify(data) !== JSON.stringify(implementations[name].decode(encoded))) {
-    throw new Error("Bad implementation: " + name)
+  if (name === 'JSON') {
+    if (JSON.stringify(data) !== JSON.stringify(implementations[name].decode(encoded))) {
+      throw new Error("Bad implementation: " + name)
+    }
+  } else {
+    const result = convertToBuffers(implementations[name].decode(encoded));
+    assert.deepStrictEqual(result, data, new Error("Bad implementation: " + name))
+  }
+
+  function convertToBuffers(obj) {
+    for (let key in obj) {
+      if (obj[key] instanceof Uint8Array) {
+        obj[key] = Buffer.from(obj[key])
+      } else if (obj[key] && typeof obj[key] === 'object') {
+        convertToBuffers(obj[key])
+      }
+    }
+    return obj;
   }
 }
 
@@ -80,7 +103,7 @@ const results = {};
 // first pass: run benchmarks
 for (var i=0; i<sampleFiles.length; i++) {
   const sampleFile = sampleFiles[i];
-  let data = JSON.parse(fs.readFileSync(sampleFile, "utf-8").toString())
+  let data = sampleDecoders[sampleFile.split('.').pop()](sampleFile)
     , encodeSuite = new Benchmark.Suite()
     , decodeSuite = new Benchmark.Suite()
 
