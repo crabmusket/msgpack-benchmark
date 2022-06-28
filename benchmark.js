@@ -13,10 +13,10 @@ var Benchmark = require('benchmark')
       encode: require('@msgpack/msgpack').encode,
       decode: require('@msgpack/msgpack').decode
     },
-    'msgpack-js-v5': {
-      encode: require('msgpack-js-v5').encode,
-      decode: require('msgpack-js-v5').decode
-    },
+    // 'msgpack-js-v5': {
+    //   encode: require('msgpack-js-v5').encode,
+    //   decode: require('msgpack-js-v5').decode
+    // },
     'msgpack-lite': {
       encode: require('msgpack-lite').encode,
       decode: require('msgpack-lite').decode
@@ -33,22 +33,22 @@ var Benchmark = require('benchmark')
       encode: require('notepack.io').encode,
       decode: require('notepack.io').decode
     },
-    'notepack.io (browser)': {
-      encode: require('notepack.io/browser/encode'),
-      decode: require('notepack.io/browser/decode')
-    },
+    //'notepack.io (browser)': {
+    //  encode: require('notepack.io/browser/encode'),
+    //  decode: require('notepack.io/browser/decode')
+    //},
     'msgpackr': {
       encode: require('msgpackr').pack,
       decode: require('msgpackr').unpack
     },
-    'what-the-pack': {
-      encode: require('what-the-pack').encode,
-      decode: require('what-the-pack').decode
-    },
-    'what-the-pack (browser)': {
-      encode: require('what-the-pack/browser').encode,
-      decode: require('what-the-pack/browser').decode
-    },
+    // 'what-the-pack': {
+    //   encode: require('what-the-pack').encode,
+    //   decode: require('what-the-pack').decode
+    // },
+    // 'what-the-pack (browser)': {
+    //   encode: require('what-the-pack/browser').encode,
+    //   decode: require('what-the-pack/browser').decode
+    // },
     // 'cbor (node)': {
     //   encode: require('cbor').encode,
     //   decode: require('cbor').decode
